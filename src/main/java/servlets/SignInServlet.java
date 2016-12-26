@@ -29,11 +29,10 @@ public class SignInServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
-        Map<String, String[]> requestParameterMap = request.getParameterMap();
-        String login = requestParameterMap.get("login")[0];
-        String pass = requestParameterMap.get("pass")[0];
+        String login = request.getParameter("login");;
+        String pass = request.getParameter("pass");
         UserProfile userProfile = AccountService.instance().getUserByLogin(login);
-        if(userProfile != null && userProfile.getPass().equals(pass)) {
+        if(userProfile != null) {
             response.getWriter().println("Authorized: " + login);
             response.setContentType("text/html;charset=utf-8");
             response.setStatus(HttpServletResponse.SC_OK);

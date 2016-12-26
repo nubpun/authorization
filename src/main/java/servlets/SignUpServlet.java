@@ -28,11 +28,26 @@ public class SignUpServlet extends HttpServlet {
     //sign up
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {
-        Map<String, String[]> requestParameterMap = request.getParameterMap();
-        String login = requestParameterMap.get("login")[0];
-        String email = requestParameterMap.get("email")[0];
-        String pass = requestParameterMap.get("pass")[0];
+
+        String login = request.getParameter("login");
+        String email = request.getParameter("email");
+        String pass = request.getParameter("pass");
+        if(login == null)
+        {
+            response.setContentType("text/html;charset=utf-8");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        if(email == null)
+        {
+            AccountService.instance().addNewUser(new UserProfile(login));
+            response.setContentType("text/html;charset=utf-8");
+            response.setStatus(HttpServletResponse.SC_OK);
+            return ;
+        }
         AccountService.instance().addNewUser(new UserProfile(login, pass, email));
+        response.setContentType("text/html;charset=utf-8");
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     //change profile
