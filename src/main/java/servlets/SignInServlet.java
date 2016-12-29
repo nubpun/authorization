@@ -1,7 +1,8 @@
 package servlets;
 
-import accounts.AccountService;
-import accounts.UserProfile;
+import dbService.DBException;
+import dbService.DBService;
+import dbService.dataSets.UsersDataSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,10 +15,10 @@ import java.util.Map;
 
 public class SignInServlet extends HttpServlet {
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"})
-    private final AccountService accountService;
+    private final DBService dbService;
 
-    public SignInServlet(AccountService accountService) {
-        this.accountService = accountService;
+    public SignInServlet(DBService dbService) {
+        this.dbService = dbService;
     }
 
     //get public user profile
@@ -31,8 +32,15 @@ public class SignInServlet extends HttpServlet {
                        HttpServletResponse response) throws ServletException, IOException {
         String login = request.getParameter("login");;
         String pass = request.getParameter("pass");
-        UserProfile userProfile = AccountService.instance().getUserByLogin(login);
-        if(userProfile != null) {
+        UsersDataSet user = null;
+        try{
+            user = dbService.getUserByName(login);
+        }
+        catch (DBException ex)
+        {
+            ex.printStackTrace();
+        }
+        if(user != null) {
             response.getWriter().println("Authorized: " + login);
             response.setContentType("text/html;charset=utf-8");
             response.setStatus(HttpServletResponse.SC_OK);

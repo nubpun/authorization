@@ -1,7 +1,8 @@
 package dbService;
 
-/**
- * Created by maxim on 12/29/16.
- */
-public class DBException {
+
+public class DBException extends Exception {
+    public DBException(Throwable throwable) {
+        super(throwable);
+    }
 }

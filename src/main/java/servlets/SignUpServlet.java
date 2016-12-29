@@ -1,7 +1,7 @@
 package servlets;
 
-import accounts.AccountService;
-import accounts.UserProfile;
+import dbService.DBException;
+import dbService.DBService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,10 +13,10 @@ import java.util.Map;
 
 public class SignUpServlet extends HttpServlet {
     @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration"}) //todo: remove after module 2 home work
-    private final AccountService accountService;
+    private final DBService dbService;
 
-    public SignUpServlet(AccountService accountService) {
-        this.accountService = accountService;
+    public SignUpServlet(DBService dbService) {
+        this.dbService = dbService;
     }
 
     //get public user profile
@@ -30,22 +30,20 @@ public class SignUpServlet extends HttpServlet {
                        HttpServletResponse response) throws ServletException, IOException {
 
         String login = request.getParameter("login");
-        String email = request.getParameter("email");
-        String pass = request.getParameter("pass");
         if(login == null)
         {
             response.setContentType("text/html;charset=utf-8");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        if(email == null)
+        try
         {
-            AccountService.instance().addNewUser(new UserProfile(login));
-            response.setContentType("text/html;charset=utf-8");
-            response.setStatus(HttpServletResponse.SC_OK);
-            return ;
+            dbService.addUser(login);
         }
-        AccountService.instance().addNewUser(new UserProfile(login, pass, email));
+        catch (DBException ex)
+        {
+            ex.printStackTrace();
+        }
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
     }

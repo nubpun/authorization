@@ -1,8 +1,8 @@
 package dbService.executor;
 
-/**
- * Created by maxim on 12/29/16.
- */
-public interface ResultHandler <T>{
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+public interface ResultHandler<T> {
+    T handle(ResultSet resultSet) throws SQLException;
 }
